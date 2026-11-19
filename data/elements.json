@@ -1,0 +1,202 @@
+[
+ {
+  "el": "O",
+  "n": 8,
+  "group": "few_strong"
+ },
+ {
+  "el": "Na",
+  "n": 41,
+  "group": "few_strong"
+ },
+ {
+  "el": "Mg",
+  "n": 51,
+  "group": "many"
+ },
+ {
+  "el": "Al",
+  "n": 48,
+  "group": "few_strong"
+ },
+ {
+  "el": "Si",
+  "n": 217,
+  "group": "many"
+ },
+ {
+  "el": "S",
+  "n": 47,
+  "group": "few_strong"
+ },
+ {
+  "el": "Ca",
+  "n": 30,
+  "group": "many"
+ },
+ {
+  "el": "Sc",
+  "n": 148,
+  "group": "moderate"
+ },
+ {
+  "el": "Ti",
+  "n": 326,
+  "group": "many"
+ },
+ {
+  "el": "V",
+  "n": 140,
+  "group": "many"
+ },
+ {
+  "el": "Cr",
+  "n": 294,
+  "group": "many"
+ },
+ {
+  "el": "Mn",
+  "n": 82,
+  "group": "many"
+ },
+ {
+  "el": "Co",
+  "n": 218,
+  "group": "many"
+ },
+ {
+  "el": "Ni",
+  "n": 241,
+  "group": "many"
+ },
+ {
+  "el": "Cu",
+  "n": 13,
+  "group": "few_strong"
+ },
+ {
+  "el": "Zn",
+  "n": 4,
+  "group": "few_strong"
+ },
+ {
+  "el": "Rb",
+  "n": 2,
+  "group": "few_strong"
+ },
+ {
+  "el": "Sr",
+  "n": 38,
+  "group": "few_strong"
+ },
+ {
+  "el": "Y",
+  "n": 88,
+  "group": "moderate"
+ },
+ {
+  "el": "Zr",
+  "n": 255,
+  "group": "moderate"
+ },
+ {
+  "el": "Nb",
+  "n": 107,
+  "group": "weak"
+ },
+ {
+  "el": "Mo",
+  "n": 52,
+  "group": "weak"
+ },
+ {
+  "el": "Ru",
+  "n": 141,
+  "group": "weak"
+ },
+ {
+  "el": "Ba",
+  "n": 35,
+  "group": "few_strong"
+ },
+ {
+  "el": "La",
+  "n": 104,
+  "group": "moderate"
+ },
+ {
+  "el": "Ce",
+  "n": 102,
+  "group": "moderate"
+ },
+ {
+  "el": "Pr",
+  "n": 155,
+  "group": "moderate"
+ },
+ {
+  "el": "Nd",
+  "n": 132,
+  "group": "moderate"
+ },
+ {
+  "el": "Sm",
+  "n": 238,
+  "group": "moderate"
+ },
+ {
+  "el": "Eu",
+  "n": 24,
+  "group": "few_strong"
+ },
+ {
+  "el": "Gd",
+  "n": 102,
+  "group": "moderate"
+ },
+ {
+  "el": "Dy",
+  "n": 61,
+  "group": "moderate"
+ },
+ {
+  "el": "Ho",
+  "n": 10,
+  "group": "weak"
+ },
+ {
+  "el": "Er",
+  "n": 98,
+  "group": "weak"
+ },
+ {
+  "el": "Hf",
+  "n": 36,
+  "group": "weak"
+ },
+ {
+  "el": "W",
+  "n": 34,
+  "group": "weak"
+ },
+ {
+  "el": "Os",
+  "n": 45,
+  "group": "weak"
+ },
+ {
+  "el": "Ir",
+  "n": 13,
+  "group": "weak"
+ },
+ {
+  "el": "Pb",
+  "n": 5,
+  "group": "weak"
+ },
+ {
+  "el": "Th",
+  "n": 38,
+  "group": "weak"
+ }
+]

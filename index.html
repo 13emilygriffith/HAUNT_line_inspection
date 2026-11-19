@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HAUNT Line Review</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>HAUNT line review</h1>
+    <div class="controls">
+      <label>Your name
+        <input id="reviewer" type="text" placeholder="e.g. Jane Doe" autocomplete="name">
+      </label>
+      <label>Element
+        <select id="element"><option value="">Loading…</option></select>
+      </label>
+      <div class="segmented" role="group" aria-label="View">
+        <button id="view-single" type="button" class="active">One at a time</button>
+        <button id="view-all" type="button">All lines</button>
+      </div>
+    </div>
+    <div class="status">
+      <span id="progress"></span>
+      <span id="sync-status"></span>
+      <button id="sync-now" type="button" hidden>Retry sending</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="caution">
+      <b>Caution:</b> the 1D GHOST spectra were combined and normalized by an unvetted script written by Claude,
+      so expect some mismatches with the synthesis. The HAUNT-star spectra are synthesized at R = 75,000 and the
+      Sun at R = 56,000. Only the most prominent lines are labeled in each panel.
+    </section>
+
+    <section id="intro" class="intro">
+      <p>Enter your name and choose an element. Each line window shows four panels: the HAUNT star (top) and the
+        Sun (bottom), synthesized with Alex Ji's line list (left, blue) and the TSFitPy line list (right, orange).
+        Solid: full synthesis. Dashed: synthesis without the element. Black points: GHOST spectrum. Lower panels:
+        how much the element absorbs (synthesis without the element minus full synthesis). Red labels mark the
+        element's lines (grey: no visible effect); black labels name other lines.</p>
+      <p>Drag to zoom (all panels zoom together), double-click to reset. In one-at-a-time view, keys
+        <kbd>1</kbd>–<kbd>6</kbd> choose a rating and <kbd>←</kbd> <kbd>→</kbd> move between lines. <kbd>Enter</kbd> goes to the next line, also from the
+        comment box (<kbd>Shift</kbd>+<kbd>Enter</kbd> for a new line in a comment).
+        Ratings save as you go.</p>
+    </section>
+
+    <section id="element-note" class="element-note" hidden></section>
+
+    <nav id="single-nav" class="single-nav" hidden>
+      <button id="prev" type="button">← Previous</button>
+      <span>Line <input id="jump" type="number" min="1" value="1"> of <span id="n-lines">0</span></span>
+      <button id="next" type="button">Next →</button>
+      <button id="next-unrated" type="button">Next unrated</button>
+    </nav>
+
+    <div id="cards"></div>
+
+    <nav id="single-nav-bottom" class="single-nav" hidden>
+      <button id="prev-bottom" type="button">← Previous</button>
+      <button id="next-bottom" type="button">Next →</button>
+      <button id="next-unrated-bottom" type="button">Next unrated</button>
+      <span class="hint">or press <kbd>Enter</kbd> for the next line</span>
+    </nav>
+  </main>
+
+  <template id="card-template">
+    <article class="card">
+      <header class="card-head">
+        <h2 class="card-title"></h2>
+        <span class="card-meta"></span>
+        <span class="card-badge"></span>
+      </header>
+      <div class="plot"></div>
+      <form class="rating" autocomplete="off">
+        <fieldset class="choices"><legend>Rating</legend></fieldset>
+        <label class="comment">Comment (optional)
+          <textarea rows="2" placeholder="e.g. badly blended but best available"></textarea>
+        </label>
+      </form>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
