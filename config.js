@@ -2,7 +2,7 @@
 window.REVIEW_CONFIG = {
   // URL of the Google Apps Script web app that writes ratings to the Google Sheet (ends in /exec).
   // See README.md, "Connect the Google Sheet". Leave empty to keep ratings only in each reviewer's browser.
-  SHEET_URL: "",
+  SHEET_URL: "https://script.google.com/macros/s/AKfycbwA_glQXUIyPUXhFCg3TSSVS2v7xLzGbM60FFbLfbB8-csaOVbWyZFrVhoPaMtukCGWqQ/exec",
 
   // Rating choices: value stored in the sheet, button text, keyboard key.
   RATINGS: [

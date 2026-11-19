@@ -37,7 +37,8 @@
       Sun at R = 56,000. Only the most prominent lines are labeled in each panel.
     </section>
 
-    <section id="intro" class="intro">
+    <details id="intro" class="intro">
+      <summary>How to read the plots and use this page</summary>
       <p>Enter your name and choose an element. Each line window shows four panels: the HAUNT star (top) and the
         Sun (bottom), synthesized with Alex Ji's line list (left, blue) and the TSFitPy line list (right, orange).
         Solid: full synthesis. Dashed: synthesis without the element. Black points: GHOST spectrum. Lower panels:
@@ -47,25 +48,13 @@
         <kbd>1</kbd>–<kbd>6</kbd> choose a rating and <kbd>←</kbd> <kbd>→</kbd> move between lines. <kbd>Enter</kbd> goes to the next line, also from the
         comment box (<kbd>Shift</kbd>+<kbd>Enter</kbd> for a new line in a comment).
         Ratings save as you go.</p>
-    </section>
+    </details>
 
     <section id="element-note" class="element-note" hidden></section>
 
-    <nav id="single-nav" class="single-nav" hidden>
-      <button id="prev" type="button">← Previous</button>
-      <span>Line <input id="jump" type="number" min="1" value="1"> of <span id="n-lines">0</span></span>
-      <button id="next" type="button">Next →</button>
-      <button id="next-unrated" type="button">Next unrated</button>
-    </nav>
 
     <div id="cards"></div>
 
-    <nav id="single-nav-bottom" class="single-nav" hidden>
-      <button id="prev-bottom" type="button">← Previous</button>
-      <button id="next-bottom" type="button">Next →</button>
-      <button id="next-unrated-bottom" type="button">Next unrated</button>
-      <span class="hint">or press <kbd>Enter</kbd> for the next line</span>
-    </nav>
   </main>
 
   <template id="card-template">
@@ -75,13 +64,26 @@
         <span class="card-meta"></span>
         <span class="card-badge"></span>
       </header>
-      <div class="plot"></div>
-      <form class="rating" autocomplete="off">
-        <fieldset class="choices"><legend>Rating</legend></fieldset>
-        <label class="comment">Comment (optional)
-          <textarea rows="2" placeholder="e.g. badly blended but best available"></textarea>
-        </label>
-      </form>
+      <div class="card-body">
+        <div class="plot"></div>
+        <aside class="side">
+          <form class="rating" autocomplete="off">
+            <fieldset class="choices"><legend>Rating</legend></fieldset>
+            <label class="comment">Comment (optional)
+              <textarea rows="3" placeholder="e.g. badly blended but best available"></textarea>
+            </label>
+          </form>
+          <nav class="side-nav" hidden>
+            <div class="nav-row">
+              <button class="prev" type="button">← Prev</button>
+              <button class="next" type="button">Next →</button>
+            </div>
+            <button class="next-unrated" type="button">Next unrated</button>
+            <label class="jump-label">Line <input class="jump" type="number" min="1"> of <span class="n-lines"></span></label>
+            <p class="hint"><kbd>1</kbd>–<kbd>6</kbd> rate · <kbd>Enter</kbd> next · <kbd>←</kbd> <kbd>→</kbd> move</p>
+          </nav>
+        </aside>
+      </div>
     </article>
   </template>
 

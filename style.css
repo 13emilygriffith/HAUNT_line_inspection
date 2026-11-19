@@ -23,12 +23,12 @@ body {
 
 .topbar {
   position: sticky; top: 0; z-index: 10;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;
-  padding: 10px 20px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px;
+  padding: 6px 16px;
   background: var(--card);
   border-bottom: 1px solid var(--border);
 }
-.topbar h1 { margin: 0; font-size: 18px; }
+.topbar h1 { margin: 0; font-size: 17px; }
 .controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
 .controls label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); }
 .controls input, .controls select {
@@ -47,8 +47,9 @@ button { font: inherit; cursor: pointer; }
   padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--card);
 }
 
-main { max-width: 1280px; margin: 0 auto; padding: 16px 20px 80px; }
-.intro { color: var(--muted); max-width: 900px; }
+main { max-width: 1600px; margin: 0 auto; padding: 10px 16px 40px; }
+.intro { color: var(--muted); max-width: 900px; margin: 4px 0; }
+.intro summary { cursor: pointer; color: var(--accent); }
 .caution {
   margin: 4px 0 8px; padding: 10px 14px; max-width: 900px;
   background: #fff8e1; border: 1px solid #f0d58c; border-left: 5px solid #e0a800; border-radius: 6px;
@@ -59,26 +60,33 @@ main { max-width: 1280px; margin: 0 auto; padding: 16px 20px 80px; }
 }
 kbd { border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; background: var(--card); font-size: 12px; }
 
-.single-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 8px 0 12px; }
-.single-nav input { width: 70px; font: inherit; padding: 4px 6px; }
-.single-nav .hint { color: var(--muted); font-size: 13px; }
 
 .card {
   background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-  padding: 12px 16px 14px; margin-bottom: 18px;
+  padding: 6px 12px 8px; margin-bottom: 14px;
 }
+.card-body { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 12px; align-items: start; }
+.side { display: flex; flex-direction: column; gap: 14px; padding-top: 30px; }
+.side-nav { display: flex; flex-direction: column; gap: 8px; }
+.side-nav .nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.side-nav button { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); }
+.side-nav .next { background: var(--accent); border-color: var(--accent); color: #fff; }
+.side-nav .jump-label { font-size: 13px; color: var(--muted); }
+.side-nav .jump { width: 64px; font: inherit; padding: 3px 6px; }
+.side-nav .hint { margin: 0; font-size: 12px; color: var(--muted); }
 .card.rated-accept { border-left: 6px solid var(--accept); }
 .card.rated-maybe { border-left: 6px solid var(--maybe); }
 .card.rated-reject { border-left: 6px solid var(--reject); }
 .card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
-.card-title { margin: 0; font-size: 18px; }
+.card-title { margin: 0; font-size: 17px; }
 .card-meta { color: var(--muted); font-size: 13px; }
 .card-badge { margin-left: auto; font-size: 13px; font-weight: 600; }
 .plot { width: 100%; min-height: 300px; }
 .plot .placeholder { padding: 120px 0; text-align: center; color: var(--muted); }
 
-.rating { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 12px; margin-top: 6px; }
-.choices { display: flex; flex-wrap: wrap; gap: 6px; border: 0; margin: 0; padding: 0; }
+.rating { display: flex; flex-direction: column; gap: 12px; }
+.choices { display: flex; flex-direction: column; gap: 5px; border: 0; margin: 0; padding: 0; }
+.choices label { justify-content: space-between; }
 .choices legend { font-size: 12px; color: var(--muted); padding: 0; margin-bottom: 4px; }
 .choices label {
   display: inline-flex; align-items: center; gap: 6px;
@@ -101,7 +109,8 @@ kbd { border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; backg
 
 .rating.locked { opacity: 0.5; pointer-events: none; }
 
-@media (max-width: 800px) {
-  .rating { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .card-body { grid-template-columns: 1fr; }
+  .side { padding-top: 0; }
   .status { margin-left: 0; }
 }

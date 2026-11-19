@@ -171,8 +171,15 @@
   const axName = (base, n) => (n === 1 ? base : base + n);            // xaxis, xaxis2, ...
   const axRef = (base, n) => (n === 1 ? base : base + n);             // x, x2, ...
   const KIND_COLOR = { 1: "#d62728", 2: "#9a9a9a", 0: "#222222" };
-  const SPEC_FRAC = 0.5;          // spectra fill the lower half of each upper panel, line labels the upper half
-  const PLOT_HEIGHT = { single: 980, all: 900 };
+  const SPEC_FRAC = 0.45;         // spectra fill the lower 45% of each upper panel, line labels the rest
+  const PLOT_HEIGHT_ALL = 820;    // per line in the all-lines view; one-at-a-time view fills the window
+
+  function singlePlotHeight() {
+    // fit the whole card (title, plot, rating column) between the sticky top bar and the bottom of the window
+    const top = $(".topbar").getBoundingClientRect().height;
+    const head = state.cards[0] ? state.cards[0].root.querySelector(".card-head").getBoundingClientRect().height : 30;
+    return Math.round(Math.max(460, Math.min(window.innerHeight - top - head - 40, 1100)));
+  }
 
   function residRange(win, panels) {
     // one residual scale for all four panels, so the element's effect can be compared between them
@@ -188,23 +195,23 @@
     return [lo - pad, hi + pad];
   }
 
-  function figure(win, compact) {
+  function figure(win, height) {
     const el = state.data.element;
     const panels = state.data.panels;
     const traces = [], annotations = [], shapes = [];
     const rr = residRange(win, panels);
     const layout = {
-      height: compact ? PLOT_HEIGHT.all : PLOT_HEIGHT.single,
-      margin: { l: 60, r: 10, t: 40, b: 45 },
+      height,
+      margin: { l: 58, r: 8, t: 30, b: 38 },
       showlegend: true,
-      legend: { orientation: "h", x: 0, y: 1.0, yanchor: "bottom", font: { size: 12 } },
+      legend: { orientation: "h", x: 0, y: 1.0, yanchor: "bottom", font: { size: 11 } },
       hovermode: "closest",
       plot_bgcolor: "#ffffff",
       paper_bgcolor: "#ffffff",
       font: { family: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", size: 12, color: "#1d2330" },
     };
     const gap = 0.06, colW = (1 - gap) / 2;
-    const rows = [{ spec: [0.64, 0.94], res: [0.535, 0.625] }, { spec: [0.12, 0.42], res: [0.0, 0.09] }];
+    const rows = [{ spec: [0.625, 0.955], res: [0.53, 0.61] }, { spec: [0.1, 0.43], res: [0.0, 0.08] }];
 
     panels.forEach((P, p) => {
       const d = win.p[P.key];
@@ -249,7 +256,7 @@
 
       annotations.push({ xref: "paper", yref: "paper", x: (xd[0] + xd[1]) / 2, y: rows[r].spec[1] + 0.004,
         xanchor: "center", yanchor: "bottom", showarrow: false,
-        text: `<b>${P.star}</b>, ${P.linelist} · max resid ${d.rmax.toFixed(3)}`, font: { size: 15 } });
+        text: `<b>${P.star}</b>, ${P.linelist} · max resid ${d.rmax.toFixed(3)}`, font: { size: 13 } });
 
       // line labels: tick at the line, leader to the (spread-out) text position, vertical text above
       const ydom = `${ya} domain`, y0 = SPEC_FRAC + 0.02;
@@ -263,7 +270,7 @@
         shapes.push({ type: "line", xref: xa, yref: ydom, x0, x1: xt, y0: y0 + 0.04, y1: y0 + 0.07,
           line: { color, width: 0.6 } });
         annotations.push({ xref: xa, yref: ydom, x: xt, y: y0 + 0.08, text: txt, textangle: -90, showarrow: false,
-          xanchor: "center", yanchor: "bottom", font: { size: 9, color } });
+          xanchor: "center", yanchor: "bottom", font: { size: 8, color } });
       }
     });
     layout.annotations = annotations;
@@ -279,7 +286,7 @@
   function renderPlot(card) {
     if (card.rendered) return;
     card.plot.innerHTML = "";
-    const { traces, layout } = figure(card.win, state.view === "all");
+    const { traces, layout } = figure(card.win, state.view === "all" ? PLOT_HEIGHT_ALL : singlePlotHeight());
     Plotly.newPlot(card.plot, traces, layout, PLOT_CONFIG);
     card.rendered = true;
   }
@@ -301,7 +308,7 @@
     root.querySelector(".card-meta").textContent =
       `line ${win.i} of ${n} · window ${win.lo.toFixed(2)}–${win.hi.toFixed(2)} Å · peak resid ${win.peak_resid.toFixed(3)} (HAUNT star, TSFitPy)`;
     const plot = root.querySelector(".plot");
-    plot.style.minHeight = (state.view === "all" ? PLOT_HEIGHT.all : PLOT_HEIGHT.single) + "px";
+    plot.style.minHeight = (state.view === "all" ? PLOT_HEIGHT_ALL : 460) + "px";
     plot.innerHTML = '<div class="placeholder">Loading plot…</div>';
 
     const form = root.querySelector(".rating");
@@ -323,6 +330,19 @@
     }
     const ta = root.querySelector("textarea");
     ta.addEventListener("input", () => setRating(win, { comment: ta.value }));
+
+    if (state.view === "single") {
+      const nav = root.querySelector(".side-nav");
+      nav.hidden = false;
+      const jump = nav.querySelector(".jump");
+      jump.max = n;
+      jump.value = win.i;
+      nav.querySelector(".n-lines").textContent = n;
+      jump.addEventListener("change", () => go(parseInt(jump.value, 10) - 1));
+      nav.querySelector(".prev").addEventListener("click", () => go(state.idx - 1));
+      nav.querySelector(".next").addEventListener("click", () => go(state.idx + 1));
+      nav.querySelector(".next-unrated").addEventListener("click", nextUnrated);
+    }
 
     const card = { win, root, plot, rendered: false };
     fillCardRating(card);
@@ -355,22 +375,18 @@
     clearCards();
     $("#view-single").classList.toggle("active", state.view === "single");
     $("#view-all").classList.toggle("active", state.view === "all");
-    $("#single-nav-bottom").hidden = !(state.data && state.view === "single");
-    if (!state.data) { $("#single-nav").hidden = true; return; }
+    document.body.classList.toggle("single-view", state.view === "single");
+    if (!state.data) return;
     const wins = state.data.windows;
-    $("#n-lines").textContent = wins.length;
-    $("#jump").max = wins.length;
 
     if (state.view === "single") {
-      $("#single-nav").hidden = false;
       state.idx = Math.min(Math.max(state.idx, 0), wins.length - 1);
-      $("#jump").value = state.idx + 1;
       const card = buildCard(wins[state.idx]);
       state.cards = [card];
       $("#cards").append(card.root);
       renderPlot(card);
+      scrollToCard();
     } else {
-      $("#single-nav").hidden = true;
       const frag = document.createDocumentFragment();
       state.cards = wins.map(buildCard);
       state.cards.forEach((c) => frag.append(c.root));
@@ -392,7 +408,14 @@
     if (!state.data) return;
     state.idx = Math.min(Math.max(idx, 0), state.data.windows.length - 1);
     render();
-    window.scrollTo({ top: 0 });
+  }
+
+  function scrollToCard() {
+    // put the card right under the sticky top bar, so the plot and the rating column fill the window
+    const card = state.cards[0];
+    if (!card) return;
+    const top = $(".topbar").getBoundingClientRect().height;
+    window.scrollTo({ top: card.root.getBoundingClientRect().top + window.scrollY - top - 8 });
   }
 
   function nextUnrated() {
@@ -497,13 +520,14 @@
     $("#element").addEventListener("change", (e) => selectElement(e.target.value, 0));
     $("#view-single").addEventListener("click", () => { state.view = "single"; render(); });
     $("#view-all").addEventListener("click", () => { state.view = "all"; render(); });
-    $("#prev").addEventListener("click", () => go(state.idx - 1));
-    $("#next").addEventListener("click", () => go(state.idx + 1));
-    $("#next-unrated").addEventListener("click", nextUnrated);
-    $("#prev-bottom").addEventListener("click", () => go(state.idx - 1));
-    $("#next-bottom").addEventListener("click", () => go(state.idx + 1));
-    $("#next-unrated-bottom").addEventListener("click", nextUnrated);
-    $("#jump").addEventListener("change", (e) => go(parseInt(e.target.value, 10) - 1));
+    let resizeTimer = null;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const card = state.cards[0];
+        if (state.view === "single" && card && card.rendered) Plotly.relayout(card.plot, { height: singlePlotHeight() });
+      }, 200);
+    });
     $("#sync-now").addEventListener("click", () => syncAll());
 
     document.addEventListener("keydown", (e) => {
