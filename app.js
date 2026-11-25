@@ -515,11 +515,7 @@
       sel.max_stamps ? `At most ${sel.max_stamps} lines are kept, spread evenly in wavelength.` : "",
       `Each window is ±${sel.half_window || 0.75} Å around the line. The same windows are shown for the Sun ` +
       `and for both line lists, so in some panels the line can be weak or missing.`,
-      d.order ? `Lines are listed strongest first, by the largest strength of the ${sp} lines in the window (either ` +
-        `line list): log(n/U) + log gf − θχ, with n the number density of the species (abundance and ionization), U its ` +
-        `partition function, χ the lower-level excitation potential and θ = 5040/T, all at τ = ${d.order.tau} in the ` +
-        `model atmosphere of the HAUNT star (${d.order.teff} K, log g ${d.order.logg}). It is a rough ranking that ignores ` +
-        `blending and saturation.` : "",
+      d.order ? `Lines are ordered by strength, strongest first.` : "",
     ];
     box.innerHTML = parts.filter(Boolean).join(" ");
     box.hidden = false;
