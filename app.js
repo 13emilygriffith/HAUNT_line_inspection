@@ -202,6 +202,9 @@
     const panels = state.data.panels;
     const traces = [], annotations = [], shapes = [];
     const rr = residRange(win, panels);
+    // one flux range per star (row), so the two line lists can be compared directly
+    const ybotStar = {};
+    for (const P of panels) ybotStar[P.star] = Math.min(ybotStar[P.star] ?? Infinity, win.p[P.key].yr[0]);
     const layout = {
       height,
       margin: { l: 58, r: 8, t: 30, b: 38 },
@@ -224,7 +227,7 @@
       const col = CFG.COLORS[P.line_source] || { synth: "#333", no_el: "#999" };
       const wl = Array.from({ length: d.n }, (_, i) => +(d.w0 + i * d.dw).toFixed(3));
       const resid = d.fn.map((v, i) => (v === null || d.f[i] === null ? null : v - d.f[i]));
-      const ybot = d.yr[0], ytop = ybot + (1.05 - ybot) / SPEC_FRAC;   // spectra below SPEC_FRAC, labels above
+      const ybot = ybotStar[P.star], ytop = ybot + (1.05 - ybot) / SPEC_FRAC;   // spectra below SPEC_FRAC, labels above
 
       if (d.ow.length) {
         traces.push({ x: d.ow, y: d.of, xaxis: xa, yaxis: ya, type: "scatter", mode: "lines+markers",
