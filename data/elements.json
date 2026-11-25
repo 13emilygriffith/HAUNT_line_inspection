@@ -1,202 +1,344 @@
 [
  {
   "el": "O",
-  "n": 8,
+  "n": 13,
+  "ions": {
+   "I": 13
+  },
   "group": "few_strong"
  },
  {
   "el": "Na",
-  "n": 41,
+  "n": 43,
+  "ions": {
+   "I": 43
+  },
   "group": "few_strong"
  },
  {
   "el": "Mg",
-  "n": 51,
+  "n": 62,
+  "ions": {
+   "I": 60,
+   "II": 2
+  },
   "group": "many"
  },
  {
   "el": "Al",
   "n": 48,
+  "ions": {
+   "I": 47,
+   "II": 1
+  },
   "group": "few_strong"
  },
  {
   "el": "Si",
-  "n": 217,
+  "n": 310,
+  "ions": {
+   "I": 308,
+   "II": 2
+  },
   "group": "many"
  },
  {
   "el": "S",
-  "n": 47,
+  "n": 74,
+  "ions": {
+   "I": 74
+  },
   "group": "few_strong"
  },
  {
   "el": "Ca",
-  "n": 30,
+  "n": 63,
+  "ions": {
+   "I": 55,
+   "II": 8
+  },
   "group": "many"
  },
  {
   "el": "Sc",
-  "n": 148,
+  "n": 155,
+  "ions": {
+   "I": 109,
+   "II": 46
+  },
   "group": "moderate"
  },
  {
   "el": "Ti",
-  "n": 326,
+  "n": 370,
+  "ions": {
+   "I": 314,
+   "II": 56
+  },
   "group": "many"
  },
  {
   "el": "V",
-  "n": 140,
+  "n": 151,
+  "ions": {
+   "I": 145,
+   "II": 6
+  },
   "group": "many"
  },
  {
   "el": "Cr",
-  "n": 294,
+  "n": 331,
+  "ions": {
+   "I": 298,
+   "II": 33
+  },
   "group": "many"
  },
  {
   "el": "Mn",
-  "n": 82,
+  "n": 104,
+  "ions": {
+   "I": 100,
+   "II": 4
+  },
   "group": "many"
  },
  {
   "el": "Co",
-  "n": 218,
+  "n": 234,
+  "ions": {
+   "I": 234
+  },
   "group": "many"
  },
  {
   "el": "Ni",
-  "n": 241,
+  "n": 285,
+  "ions": {
+   "I": 285
+  },
   "group": "many"
  },
  {
   "el": "Cu",
-  "n": 13,
+  "n": 17,
+  "ions": {
+   "I": 17
+  },
   "group": "few_strong"
  },
  {
   "el": "Zn",
   "n": 4,
+  "ions": {
+   "I": 4
+  },
   "group": "few_strong"
  },
  {
   "el": "Rb",
   "n": 2,
+  "ions": {
+   "I": 2
+  },
   "group": "few_strong"
  },
  {
   "el": "Sr",
-  "n": 38,
+  "n": 41,
+  "ions": {
+   "I": 39,
+   "II": 2
+  },
   "group": "few_strong"
  },
  {
   "el": "Y",
-  "n": 88,
+  "n": 97,
+  "ions": {
+   "I": 39,
+   "II": 58
+  },
   "group": "moderate"
  },
  {
   "el": "Zr",
-  "n": 255,
+  "n": 268,
+  "ions": {
+   "I": 171,
+   "II": 97
+  },
   "group": "moderate"
  },
  {
   "el": "Nb",
-  "n": 107,
+  "n": 115,
+  "ions": {
+   "I": 102,
+   "II": 13
+  },
   "group": "weak"
  },
  {
   "el": "Mo",
-  "n": 52,
+  "n": 58,
+  "ions": {
+   "I": 53,
+   "II": 5
+  },
   "group": "weak"
  },
  {
   "el": "Ru",
-  "n": 141,
+  "n": 167,
+  "ions": {
+   "I": 166,
+   "II": 1
+  },
   "group": "weak"
  },
  {
   "el": "Ba",
   "n": 35,
+  "ions": {
+   "I": 25,
+   "II": 10
+  },
   "group": "few_strong"
  },
  {
   "el": "La",
-  "n": 104,
+  "n": 115,
+  "ions": {
+   "II": 115
+  },
   "group": "moderate"
  },
  {
   "el": "Ce",
-  "n": 102,
+  "n": 118,
+  "ions": {
+   "II": 118
+  },
   "group": "moderate"
  },
  {
   "el": "Pr",
-  "n": 155,
+  "n": 178,
+  "ions": {
+   "II": 178
+  },
   "group": "moderate"
  },
  {
   "el": "Nd",
-  "n": 132,
+  "n": 140,
+  "ions": {
+   "II": 140
+  },
   "group": "moderate"
  },
  {
   "el": "Sm",
-  "n": 238,
+  "n": 258,
+  "ions": {
+   "II": 258
+  },
   "group": "moderate"
  },
  {
   "el": "Eu",
   "n": 24,
+  "ions": {
+   "I": 3,
+   "II": 21
+  },
   "group": "few_strong"
  },
  {
   "el": "Gd",
-  "n": 102,
+  "n": 111,
+  "ions": {
+   "I": 2,
+   "II": 109
+  },
   "group": "moderate"
  },
  {
   "el": "Dy",
-  "n": 61,
+  "n": 76,
+  "ions": {
+   "I": 4,
+   "II": 72
+  },
   "group": "moderate"
  },
  {
   "el": "Ho",
-  "n": 10,
+  "n": 12,
+  "ions": {
+   "I": 4,
+   "II": 8
+  },
   "group": "weak"
  },
  {
   "el": "Er",
-  "n": 98,
+  "n": 105,
+  "ions": {
+   "I": 11,
+   "II": 94
+  },
   "group": "weak"
  },
  {
   "el": "Hf",
-  "n": 36,
+  "n": 39,
+  "ions": {
+   "I": 13,
+   "II": 26
+  },
   "group": "weak"
  },
  {
   "el": "W",
-  "n": 34,
+  "n": 40,
+  "ions": {
+   "I": 40
+  },
   "group": "weak"
  },
  {
   "el": "Os",
-  "n": 45,
+  "n": 47,
+  "ions": {
+   "I": 47
+  },
   "group": "weak"
  },
  {
   "el": "Ir",
-  "n": 13,
+  "n": 15,
+  "ions": {
+   "I": 15
+  },
   "group": "weak"
  },
  {
   "el": "Pb",
   "n": 5,
+  "ions": {
+   "I": 5
+  },
   "group": "weak"
  },
  {
   "el": "Th",
-  "n": 38,
+  "n": 42,
+  "ions": {
+   "II": 42
+  },
   "group": "weak"
  }
 ]

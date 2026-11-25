@@ -18,6 +18,7 @@ window.REVIEW_CONFIG = {
   COLORS: {
     ji:      { synth: "#08519c", no_el: "#6baed6" },
     tsfitpy: { synth: "#a63603", no_el: "#fd8d3c" },
+    tsfitpy2: { synth: "#a63603", no_el: "#fd8d3c" },
     obs: "#000000",
   },
 };

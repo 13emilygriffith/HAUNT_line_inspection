@@ -10,6 +10,8 @@
     reviewer: "",
     el: "",
     data: null,          // contents of data/{el}.json
+    ion: "",             // ionization stage shown ("I", "II"); windows are listed per stage
+    wins: [],            // the windows of that stage, in data order (strongest first)
     view: "single",      // "single" | "all"
     idx: 0,              // current window (single view), 0-based
     cards: [],           // rendered cards: {win, root, plot, rendered}
@@ -146,7 +148,7 @@
   function setRating(win, patch) {
     if (!state.reviewer) return;
     const k = winKey(win);
-    const prev = ratings[k] || { window: win.i, center: win.center, species: win.species, rating: "", comment: "" };
+    const prev = ratings[k] || { window: win.i, center: win.center, species: win.dom || win.species, rating: "", comment: "" };
     ratings[k] = { ...prev, ...patch, t: Date.now(), synced: false };
     saveRatings();
     updateProgress();
@@ -160,9 +162,9 @@
 
   function updateProgress() {
     if (!state.data) { $("#progress").textContent = ""; return; }
-    const n = state.data.windows.length;
-    const done = state.data.windows.filter((w) => (ratings[winKey(w)] || {}).rating).length;
-    $("#progress").textContent = `${state.el}: ${done} / ${n} rated`;
+    const n = state.wins.length;
+    const done = state.wins.filter((w) => (ratings[winKey(w)] || {}).rating).length;
+    $("#progress").textContent = `${state.el}${state.ion ? " " + state.ion : ""}: ${done} / ${n} rated`;
   }
 
   // ---------------------------------------------------------------------------------------------------------
@@ -303,10 +305,16 @@
   // ---------------------------------------------------------------------------------------------------------
   function buildCard(win) {
     const root = $("#card-template").content.firstElementChild.cloneNode(true);
-    const n = state.data.windows.length;
-    root.querySelector(".card-title").textContent = `${win.species}  ${win.center.toFixed(2)} Å`;
+    const n = state.wins.length;
+    const sp = win.dom || win.species;
+    root.querySelector(".card-title").textContent = `${sp}  ${win.center.toFixed(2)} Å`;
     root.querySelector(".card-meta").textContent =
-      `line ${win.i} of ${n} · window ${win.lo.toFixed(2)}–${win.hi.toFixed(2)} Å · peak resid ${win.peak_resid.toFixed(3)} (HAUNT star, TSFitPy)`;
+      `line ${win.i} of ${n} · window ${win.lo.toFixed(2)}–${win.hi.toFixed(2)} Å · ` +
+      (win.species !== sp ? `window also has ${win.species.split(", ").filter((x) => x !== sp).join(", ")} lines · ` : "") +
+      `HAUNT-star peak resid: ` + state.data.panels.filter((P) => P.star === state.data.panels[0].star).map((P) => {
+        const v = win.peak ? win.peak[P.line_source] : null;
+        return `${P.linelist.replace(" line list", "")} ${v === null || v === undefined ? "not selected" : v.toFixed(3)}`;
+      }).join(", ");
     const plot = root.querySelector(".plot");
     plot.style.minHeight = (state.view === "all" ? PLOT_HEIGHT_ALL : 460) + "px";
     plot.innerHTML = '<div class="placeholder">Loading plot…</div>';
@@ -377,7 +385,7 @@
     $("#view-all").classList.toggle("active", state.view === "all");
     document.body.classList.toggle("single-view", state.view === "single");
     if (!state.data) return;
-    const wins = state.data.windows;
+    const wins = state.wins;
 
     if (state.view === "single") {
       state.idx = Math.min(Math.max(state.idx, 0), wins.length - 1);
@@ -406,7 +414,7 @@
 
   function go(idx) {
     if (!state.data) return;
-    state.idx = Math.min(Math.max(idx, 0), state.data.windows.length - 1);
+    state.idx = Math.min(Math.max(idx, 0), state.wins.length - 1);
     render();
   }
 
@@ -419,12 +427,12 @@
   }
 
   function nextUnrated() {
-    const wins = state.data ? state.data.windows : [];
+    const wins = state.wins;
     for (let s = 1; s <= wins.length; s++) {
       const j = (state.idx + s) % wins.length;
       if (!(ratings[winKey(wins[j])] || {}).rating) { go(j); return; }
     }
-    alert("Every line of this element is rated.");
+    alert(`Every ${state.el} ${state.ion} line is rated.`);
   }
 
   // ---------------------------------------------------------------------------------------------------------
@@ -442,10 +450,34 @@
     }
   }
 
-  async function selectElement(el, idx = 0) {
+  const ROMAN = ["I", "II", "III", "IV"];
+  function ionCounts(data) {
+    // {stage: number of windows}, in order I, II, ... (other labels, e.g. molecules, last)
+    const n = {};
+    for (const w of data.windows) { const k = w.ion || ""; n[k] = (n[k] || 0) + 1; }
+    const rank = (k) => (ROMAN.includes(k) ? ROMAN.indexOf(k) : 99);
+    return Object.entries(n).sort((a, b) => rank(a[0]) - rank(b[0]));
+  }
+
+  function setIon(ion) {
+    const counts = ionCounts(state.data);
+    if (!counts.some(([k]) => k === ion)) ion = counts.reduce((a, b) => (b[1] > a[1] ? b : a))[0];  // most lines
+    state.ion = ion;
+    state.wins = state.data.windows.filter((w) => (w.ion || "") === ion);
+    const sel = $("#ion");
+    sel.innerHTML = counts.map(([k, n]) =>
+      `<option value="${k}">${state.el} ${k} (${n} line${n > 1 ? "s" : ""})</option>`).join("");
+    sel.value = ion;
+    $("#ion-label").hidden = counts.length < 2;
+  }
+
+  async function selectElement(el, idx = 0, ion = "") {
     state.el = el;
     state.data = null;
+    state.wins = [];
+    state.ion = "";
     state.idx = idx;
+    $("#ion-label").hidden = true;
     $("#element-note").hidden = true;
     loadRatings();
     updateProgress();
@@ -458,6 +490,7 @@
       return;
     }
     if (state.el !== el) return;
+    setIon(ion);
     showElementNote();
     updateProgress();
     render();
@@ -467,17 +500,26 @@
   function showElementNote() {
     const box = $("#element-note");
     if (!state.data) { box.hidden = true; return; }
-    const d = state.data, sel = d.selection || {}, el = d.element, n = d.windows.length;
+    const d = state.data, sel = d.selection || {}, el = d.element, n = d.windows.length, ns = state.wins.length;
+    const multi = ns < n, sp = `${el} ${state.ion}`;
     const cuts = [`removing ${el} changes the flux by more than ${sel.min_resid}`];
     if (sel.max_resid !== null && sel.max_resid !== undefined) cuts.push(`but by no more than ${sel.max_resid} (very strong, saturated lines are left out)`);
     if (sel.wl_min !== null && sel.wl_min !== undefined) cuts.push(`at wavelengths of ${sel.wl_min} Å or more`);
     const parts = [
-      `<b>${n} ${el} lines.</b> These are already pruned: a line is shown only if, in the HAUNT-star synthesis with ` +
-      `the TSFitPy line list, ${cuts.join(", ")}.`,
+      (multi ? `<b>${ns} ${sp} lines</b> (of ${n} ${el} lines; choose ${el} I or ${el} II at the top). Each line ` +
+        `window is listed under the ionization stage of the line at its centre (the ${el} line that absorbs most ` +
+        `there in the HAUNT-star synthesis).` : `<b>${ns} ${sp} lines.</b>`) +
+      ` These are already pruned: a line is shown only if, in the HAUNT-star synthesis with ` +
+      `Alex Ji's line list or the TSFitPy line list (either is enough), ${cuts.join(", ")}.`,
       sel.include_molecules ? `Molecular lines containing ${el} are included.` : `Only atomic ${el} lines are included (no molecules).`,
       sel.max_stamps ? `At most ${sel.max_stamps} lines are kept, spread evenly in wavelength.` : "",
       `Each window is ±${sel.half_window || 0.75} Å around the line. The same windows are shown for the Sun ` +
       `and for both line lists, so in some panels the line can be weak or missing.`,
+      d.order ? `Lines are listed strongest first, by the largest strength of the ${sp} lines in the window (either ` +
+        `line list): log(n/U) + log gf − θχ, with n the number density of the species (abundance and ionization), U its ` +
+        `partition function, χ the lower-level excitation potential and θ = 5040/T, all at τ = ${d.order.tau} in the ` +
+        `model atmosphere of the HAUNT star (${d.order.teff} K, log g ${d.order.logg}). It is a rough ranking that ignores ` +
+        `blending and saturation.` : "",
     ];
     box.innerHTML = parts.filter(Boolean).join(" ");
     box.hidden = false;
@@ -500,13 +542,14 @@
   function writeHash() {
     const h = new URLSearchParams();
     if (state.el) h.set("el", state.el);
+    if (state.ion) h.set("ion", state.ion);
     if (state.view === "single" && state.data) h.set("line", String(state.idx + 1));
     h.set("view", state.view);
     history.replaceState(null, "", "#" + h.toString());
   }
   function readHash() {
     const h = new URLSearchParams(location.hash.slice(1));
-    return { el: h.get("el") || "", line: parseInt(h.get("line") || "1", 10), view: h.get("view") };
+    return { el: h.get("el") || "", ion: h.get("ion") || "", line: parseInt(h.get("line") || "1", 10), view: h.get("view") };
   }
 
   // ---------------------------------------------------------------------------------------------------------
@@ -518,6 +561,14 @@
     nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") nameInput.blur(); });
 
     $("#element").addEventListener("change", (e) => selectElement(e.target.value, 0));
+    $("#ion").addEventListener("change", (e) => {
+      if (!state.data) return;
+      setIon(e.target.value);
+      state.idx = 0;
+      showElementNote();
+      updateProgress();
+      render();
+    });
     $("#view-single").addEventListener("click", () => { state.view = "single"; render(); });
     $("#view-all").addEventListener("click", () => { state.view = "all"; render(); });
     let resizeTimer = null;
@@ -574,7 +625,7 @@
     if (h.view === "all" || h.view === "single") state.view = h.view;
     if (h.el && [...$("#element").options].some((o) => o.value === h.el)) {
       $("#element").value = h.el;
-      await selectElement(h.el, (h.line || 1) - 1);
+      await selectElement(h.el, (h.line || 1) - 1, h.ion);
     } else {
       render();
     }
